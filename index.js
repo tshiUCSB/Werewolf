@@ -31,7 +31,7 @@ Werewolf.prototype.initFirebase = function() {
 
 Werewolf.prototype.setup = function() {
     this.mainDiv.innerHTML = 
-        "<input type='text' id='join-game-name' placeholder='Name'></input>" + 
+        "<input type='text' id='join-game-name' placeholder='Enter Name'></input><br>" + 
         "<button type='button' id='join-game-button'>Join Game</button>";
     
     this.joinGameName = document.getElementById('join-game-name');
@@ -125,8 +125,21 @@ Werewolf.prototype.displayRole = function() {
             }.bind(this));
         }
     }.bind(this));
+    this.displayWinner();
 }
 
 Werewolf.prototype.displayDead = function() {
     this.mainDiv.innerHTML = "<h1 style='font-size: 500%'>GAME<br>OVER</h1>";
+}
+
+Werewolf.prototype.displayWinner = function() {
+    this.database.ref("game/winningTeam").on('value', function(snapshot){
+        console.log(snapshot.val());
+        if (snapshot.val() == "Werewolves" || snapshot.val() == "Villagers"){
+            this.mainDiv.innerHTML =
+                "<h1>" + snapshot.val() + "</h1>" +
+                "<h2> WIN </h2>";
+            this.database.ref("game/winningTeam").off('value');
+        }
+    }.bind(this));
 }
